@@ -342,6 +342,17 @@ docker ps -a
 docker network ls
 ```
 
+## Screenshots 
+
+<img width="1788" height="1142" alt="image" src="https://github.com/user-attachments/assets/28ced0e9-475c-4030-a94f-2753faf74187" />
+
+
+<img width="1784" height="130" alt="image" src="https://github.com/user-attachments/assets/1c4b99f1-d78e-408e-a945-31b355074d24" />
+
+
+
+
+
 ## Key Takeaways
 
 1. **Custom networks enable name-based communication** - Containers can use friendly names instead of IP addresses
