@@ -17,7 +17,8 @@ Without volumes, data stored inside a container is lost when the container is re
 ## Project Structure
 ```
 assignment-2/
-â””â”€â”€ README.md          # This file (documentation only, no code files needed)
+README.md          # This file (documentation only, no code)
+
 ```
 
 ## Prerequisites
@@ -293,10 +294,8 @@ docker run -d --name pg-persist -v pgdata:/var/lib/postgresql/data postgres:16-a
 - **Disaster recovery**: Restore data by mounting volume to new container
 
 ## Author
-[Your Name]
+Velayutham
 
 ## Date Completed
 December 18, 2025
 
-## Next Steps
-Proceed to Assignment 3: Multi-Container with Custom Network
