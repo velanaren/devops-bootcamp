@@ -609,6 +609,11 @@ docker rm blog-api
 docker volume ls | grep blog-data
 ```
 
+## Screenshots
+
+<img width="2880" height="218" alt="image" src="https://github.com/user-attachments/assets/42800a73-5def-4f46-bde6-747d344c8428" />
+
+
 ## Key Learnings
 
 ### Technical Skills
