@@ -1,0 +1,12 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install requests library
+RUN pip install requests
+
+# Copy stress script
+COPY stress.py .
+
+# Run the load generator
+CMD ["python", "stress.py"]

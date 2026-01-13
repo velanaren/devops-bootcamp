@@ -1,0 +1,12 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install AWS SDK
+RUN pip install boto3
+
+# Copy alert script
+COPY alert.py .
+
+# Run alert service
+CMD ["python", "alert.py"]

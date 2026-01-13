@@ -1,0 +1,109 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: monitoring_db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Flask Web Application
+  webapp:
+    build:
+      context: ./app
+      dockerfile: Dockerfile.app
+    container_name: webapp
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: monitoring_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app_network
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+
+
+  # Monitoring Service
+  monitor:
+    build:
+      context: ./monitor
+      dockerfile: Dockerfile.monitor
+    container_name: monitor
+    ports:
+      - "8001:8001"
+    environment:
+      CONTAINER_NAME: webapp
+      TARGET_URL: http://webapp:8000
+      LOG_DIR: /logs
+    volumes:
+      - ./logs:/logs:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - webapp
+    networks:
+      - app_network
+    restart: unless-stopped
+
+  # Load Generator
+  load:
+    build:
+      context: ./load
+      dockerfile: Dockerfile.load
+    container_name: load-generator
+    environment:
+      TARGET_URL: http://webapp:8000
+      STRESS_LEVEL: high
+    depends_on:
+      - webapp
+    networks:
+      - app_network
+
+  # Alert Service
+  alert:
+    build:
+      context: ./alert
+      dockerfile: Dockerfile.alert
+    container_name: alert-service
+    env_file:
+      - .env
+    volumes:
+      - ./logs:/logs:ro
+    depends_on:
+      - monitor
+    networks:
+      - app_network
+    restart: unless-stopped
+
+
+volumes:
+  db_data:
+
+networks:
+  app_network:
+    driver: bridge

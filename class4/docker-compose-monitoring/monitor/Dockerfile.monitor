@@ -1,0 +1,25 @@
+FROM python:3.11-slim
+
+# Install Docker CLI and curl
+RUN apt-get update && apt-get install -y \
+    docker.io \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Install Flask
+RUN pip install flask
+
+# Copy scripts
+COPY monitor.sh /app/monitor.sh
+COPY dashboard.py /app/dashboard.py
+
+# Make script executable
+RUN chmod +x /app/monitor.sh
+
+# Expose dashboard port
+EXPOSE 8001
+
+# Start both dashboard and monitoring script
+CMD ["sh", "-c", "python dashboard.py & ./monitor.sh"]
